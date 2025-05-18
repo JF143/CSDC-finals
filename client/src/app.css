@@ -1,0 +1,30 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary-color: #475be8;
+  --dark-primary-color: #2b3674;
+  --secondary-color: #e4e8ef;
+  --dark-secondary-color: #808191;
+  --accent-color: #dadefa;
+  --black-color: #11142d;
+  --white-color: #ffffff;
+  --error-color: #ff0000;
+  --success-color: #2ed480;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Manrope", sans-serif;
+}
+
+body {
+  color: var(--black-color);
+}
+
+a {
+  text-decoration: none;
+}
