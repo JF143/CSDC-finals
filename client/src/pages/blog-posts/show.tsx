@@ -1,4 +1,4 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack, Typography, Paper, Divider, Box } from "@mui/material";
 import { useOne, useShow } from "@refinedev/core";
 import {
   DateField,
@@ -24,35 +24,65 @@ export const BlogPostShow = () => {
 
   return (
     <Show isLoading={isLoading}>
-      <Stack gap={1}>
-        <Typography variant="body1" fontWeight="bold">
-          {"ID"}
-        </Typography>
-        <TextField value={record?.id} />
+      <Paper
+        elevation={3}
+        sx={{
+          p:4,
+          borderRadius: 4,
+          maxWidth: 700,
+          mx: "auto",
+          background: (theme) =>
+            theme.palette.mode === "dark" 
+          ? "#23272f" 
+          : "linear-gradient(90deg, #e3f2fd 60%, #bbdefb 100%)",
+        }}
+        >
+      <Stack gap={3}>
+        <Box>
+          <Typography variant="h4" fontWeight={700} gutterBottom>
+            {record?.title}
+          </Typography>
+          <Typography variant="subtitle2" color="text.secondary">
+            Blog Post Details
+          </Typography>
+        </Box>
+        <Divider />
 
-        <Typography variant="body1" fontWeight="bold">
-          {"Title"}
-        </Typography>
-        <TextField value={record?.title} />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body2" color="text.secondary" minWidth={100}>
+            ID
+          </Typography>
+          <TextField value={record?.id} />
+        </Stack>
 
-        <Typography variant="body1" fontWeight="bold">
-          {"Content"}
-        </Typography>
-        <MarkdownField value={record?.content} />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body2" color="text.secondary" minWidth={100}>
+            Content
+          </Typography>
+          <Box flex ={1}>
+            <MarkdownField value={record?.content} />
+          </Box>
+        </Stack>
 
-        <Typography variant="body1" fontWeight="bold">
-          {"Category"}
-        </Typography>
-        {categoryIsLoading ? <>Loading...</> : <>{categoryData?.data?.title}</>}
-        <Typography variant="body1" fontWeight="bold">
-          {"Status"}
-        </Typography>
-        <TextField value={record?.status} />
-        <Typography variant="body1" fontWeight="bold">
-          {"CreatedAt"}
-        </Typography>
-        <DateField value={record?.createdAt} />
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body2" color="text.secondary" minWidth={100}>
+            Category
+          </Typography>
+          {categoryIsLoading ? (
+            <>Loading...</>
+          ) : (
+            <Typography>{categoryData?.data?.title}</Typography>
+          )}
+        </Stack>
+
+        <Stack direction="row" spacing={2} alignItems="center">
+          <Typography variant="body2" color="text.secondary" minWidth={100}>
+          Created At
+          </Typography>
+          <DateField value={record?.createdAt} />
+        </Stack>
       </Stack>
+      </Paper>
     </Show>
   );
 };

@@ -1,4 +1,6 @@
 import { Typography } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Box from "@mui/material/Box";
 import { DataGrid, type GridColDef } from "@mui/x-data-grid";
 import { useMany } from "@refinedev/core";
 import {
@@ -32,22 +34,22 @@ export const BlogPostList = () => {
         headerName: "ID",
         type: "number",
         minWidth: 50,
-        display: "flex",
-        align: "left",
-        headerAlign: "left",
+        align: "center",
+        headerAlign: "center",
       },
       {
         field: "title",
         headerName: "Title",
         minWidth: 200,
-        display: "flex",
+        align:"center",
+        headerAlign: "center",
       },
       {
         field: "content",
         flex: 1,
         headerName: "Content",
         minWidth: 250,
-        display: "flex",
+        headerAlign: "center",
         renderCell: function render({ value }) {
           if (!value) return "-";
           return (
@@ -56,6 +58,8 @@ export const BlogPostList = () => {
               whiteSpace="pre"
               overflow="hidden"
               textOverflow="ellipsis"
+              color="text.secondary"
+              fontSize={14}
             >
               {value}
             </Typography>
@@ -65,8 +69,9 @@ export const BlogPostList = () => {
       {
         field: "category",
         headerName: "Category",
-        minWidth: 160,
-        display: "flex",
+        minWidth: 200,
+        align: "center",
+        headerAlign: "center",
         valueGetter: (_, row) => {
           const value = row?.category;
           return value;
@@ -75,7 +80,9 @@ export const BlogPostList = () => {
           return categoryIsLoading ? (
             <>Loading...</>
           ) : (
-            categoryData?.data?.find((item) => item.id === value?.id)?.title
+            <Typography fontWeight={500}>
+              {categoryData?.data?.find((item) => item.id === value?.id)?.title}
+            </Typography>
           );
         },
       },
@@ -83,13 +90,15 @@ export const BlogPostList = () => {
         field: "status",
         headerName: "Status",
         minWidth: 80,
-        display: "flex",
+        align: "center",
+        headerAlign: "center",
       },
       {
         field: "createdAt",
         headerName: "Created at",
         minWidth: 120,
-        display: "flex",
+        align: "center",
+        headerAlign: "center",
         renderCell: function render({ value }) {
           return <DateField value={value} />;
         },
@@ -97,18 +106,17 @@ export const BlogPostList = () => {
       {
         field: "actions",
         headerName: "Actions",
-        align: "right",
-        headerAlign: "right",
-        minWidth: 120,
+        align: "center",
+        headerAlign: "center",
+        minWidth: 140,
         sortable: false,
-        display: "flex",
         renderCell: function render({ row }) {
           return (
-            <>
+            <div style={{ display: "flex", gap: 8}}>
               <EditButton hideText recordItemId={row.id} />
               <ShowButton hideText recordItemId={row.id} />
               <DeleteButton hideText recordItemId={row.id} />
-            </>
+            </div>
           );
         },
       },
@@ -118,7 +126,59 @@ export const BlogPostList = () => {
 
   return (
     <List>
-      <DataGrid {...dataGridProps} columns={columns} />
+      <Paper
+        elevation={3}
+        sx={{
+          p: 2,
+          borderRadius: 4,
+          background: (theme) =>
+            theme.palette.mode === "dark" 
+          ? "linear-gradient(90deg, #23272f 60%, #283046 100%)"
+          : "linear-gradient(90deg, #e3f2fd 60%, #f8fafc 100%)",
+          boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
+        }}
+      >
+        <Box sx={{ width: "100%", overflowX: "auto"}}>
+          <div style={{ minWidth: 1300}}>
+            <DataGrid
+              {...dataGridProps}
+              columns={columns}
+              autoHeight
+              sx={{
+                borderRadius: 3,
+                background: "transparent",
+              "& .MuiDataGrid-cell":{
+                  fontSize:15,
+                  borderRight: "1px solid #b3c6e0"
+                },
+                "& .MuiDataGrid-columnHeaders": {
+                background: (theme) =>
+                theme.palette.mode === "dark" ? "#283046" : "#e3f2fd",
+                fontWeight: 700,
+                fontSize: 16,
+                borderRight: "1px solid #b3c6e0",
+                },
+                "& .MuiDataGrid-columnHeader:last-of-type, & .MuiDataGrid-cell:last-of-type": {
+                  borderRight: "none",
+                },
+                "& .MuiDataGrid-row": {
+                transition: "background 0.2s",
+                "&:hover": {
+                background: (theme) =>
+                  theme.palette.mode === "dark"
+                    ? "rgba(100,181,246,0.08)"
+                    : "rgba(25, 118, 210, 0.04)",
+                  },
+                },
+              "& .MuiDataGrid-footerContainer": {
+                background: "transparent",
+              },
+              border: "none",
+            }}
+          />
+          </div>
+        </Box>
+      </Paper>
     </List>
   );
 };

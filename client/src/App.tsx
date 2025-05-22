@@ -42,6 +42,11 @@ import {
 } from "./pages/categories";
 import { Login } from "./pages/login";
 import { parseJwt } from "./utils/parse-jwt";
+import "./app.css";
+
+
+
+
 
 const axiosInstance = axios.create();
 axiosInstance.interceptors.request.use((config) => {

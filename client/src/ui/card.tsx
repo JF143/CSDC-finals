@@ -1,12 +1,15 @@
 import * as React from "react"
-
+import { Card } from "@/ui/card"
 import { cn } from "@/lib/utils"
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(({ className, ...props }, ref) => (
+const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>
+  (({ className, ...props }, ref) => (
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border border-slate-200 bg-white text-slate-950 shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:text-slate-50",
+      "rounded-2xl border border-blue-100 bg-white text-slate-900 shadow-lg shadow-blue-100/40",
+      "transition-all duration-300",
+      "dark:bg-slate-950 dark:text-slate-50 dark:border-blue-900 dark:shadow-blue-900/30",
       className,
     )}
     {...props}
@@ -46,5 +49,3 @@ const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDiv
   ),
 )
 CardFooter.displayName = "CardFooter"
-
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

@@ -2,6 +2,8 @@ import { Autocomplete, Box, MenuItem, Select, TextField } from "@mui/material";
 import { Create, useAutocomplete } from "@refinedev/mui";
 import { useForm } from "@refinedev/react-hook-form";
 import { Controller } from "react-hook-form";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
 
 export const BlogPostCreate = () => {
   const {
@@ -17,10 +19,28 @@ export const BlogPostCreate = () => {
   });
 
   return (
-    <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
+ <Create isLoading={formLoading} saveButtonProps={saveButtonProps}>
+    <Paper
+      elevation={3}
+      sx={{
+        p: 4,
+        borderRadius: 4,
+        maxWidth: 600,
+        mx: "auto",
+        background: (theme) =>
+          theme.palette.mode === "dark"
+            ? "#23272f"
+            : "linear-gradient(90deg, #e3f2fd 60%, #f8fafc 100%)",
+      }}
+    >
+      <Box mb={3}>
+        <Typography variant="h5" fontWeight={700}>
+          Create Blog Post
+        </Typography>
+      </Box>
       <Box
         component="form"
-        sx={{ display: "flex", flexDirection: "column" }}
+        sx={{ display: "flex", flexDirection: "column", gap: 2 }}
         autoComplete="off"
       >
         <TextField
@@ -29,12 +49,11 @@ export const BlogPostCreate = () => {
           })}
           error={!!(errors as any)?.title}
           helperText={(errors as any)?.title?.message}
-          margin="normal"
-          fullWidth
           InputLabelProps={{ shrink: true }}
           type="text"
           label={"Title"}
           name="title"
+          fullWidth
         />
         <TextField
           {...register("content", {
@@ -42,18 +61,17 @@ export const BlogPostCreate = () => {
           })}
           error={!!(errors as any)?.content}
           helperText={(errors as any)?.content?.message}
-          margin="normal"
-          fullWidth
           InputLabelProps={{ shrink: true }}
           multiline
           label={"Content"}
           name="content"
+          rows={4}
+          fullWidth
         />
         <Controller
           control={control}
           name={"category.id"}
           rules={{ required: "This field is required" }}
-          // eslint-disable-next-line
           defaultValue={null as any}
           render={({ field }) => (
             <Autocomplete
@@ -86,7 +104,6 @@ export const BlogPostCreate = () => {
                 <TextField
                   {...params}
                   label={"Category"}
-                  margin="normal"
                   variant="outlined"
                   error={!!(errors as any)?.category?.id}
                   helperText={(errors as any)?.category?.id?.message}
@@ -101,19 +118,22 @@ export const BlogPostCreate = () => {
           control={control}
           render={({ field }) => {
             return (
-              <Select
+              <TextField
                 {...field}
-                value={field?.value || "draft"}
-                label={"Status"}
+                select
+                label="Status"
+                fullWidth
               >
                 <MenuItem value="draft">Draft</MenuItem>
                 <MenuItem value="published">Published</MenuItem>
                 <MenuItem value="rejected">Rejected</MenuItem>
-              </Select>
+              </TextField>
             );
           }}
         />
       </Box>
-    </Create>
-  );
+    </Paper>
+  </Create>
+  
+);
 };
