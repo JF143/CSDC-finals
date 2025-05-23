@@ -1,97 +1,59 @@
-import { DataGrid, type GridColDef } from "@mui/x-data-grid";
-import {
-  DeleteButton,
-  EditButton,
-  List,
-  ShowButton,
-  useDataGrid,
-} from "@refinedev/mui";
-import React from "react";
-import Paper from "@mui/material/Paper";
+import { DataGrid, type GridColDef } from "@mui/x-data-grid"
+import { useDataGrid, List, EditButton, ShowButton, DeleteButton } from "@refinedev/mui"
 
 export const CategoryList = () => {
-  const { dataGridProps } = useDataGrid({});
+  const { dataGridProps } = useDataGrid()
 
-  const columns = React.useMemo<GridColDef[]>(
-    () => [
-      {
-        field: "id",
-        headerName: "ID",
-        type: "number",
-        minWidth: 50,
-        display: "flex",
-        align: "center",
-        headerAlign: "center",
+  const columns: GridColDef[] = [
+    {
+      field: "id",
+      headerName: "ID",
+      type: "string",
+      minWidth: 50,
+    },
+    {
+      field: "title",
+      flex: 1,
+      headerName: "Title",
+      minWidth: 200,
+    },
+    {
+      field: "description",
+      flex: 1,
+      headerName: "Description",
+      minWidth: 250,
+    },
+    {
+      field: "createdAt",
+      flex: 1,
+      headerName: "Created At",
+      minWidth: 250,
+      renderCell: function render({ value }) {
+        return new Date(value).toLocaleString()
       },
-      {
-        field: "title",
-        flex: 1,
-        headerName: "Title",
-        minWidth: 200,
-        display: "flex",
-        align: "center",
-        headerAlign: "center",  
+    },
+    {
+      field: "actions",
+      headerName: "Actions",
+      sortable: false,
+      renderCell: function render({ row }) {
+        return (
+          <>
+            <EditButton hideText recordItemId={row.id} />
+            <ShowButton hideText recordItemId={row.id} />
+            <DeleteButton hideText recordItemId={row.id} />
+          </>
+        )
       },
-      {
-        field: "actions",
-        headerName: "Actions",
-        align: "center",
-        headerAlign: "center",
-        minWidth: 120,
-        sortable: false,
-        display: "flex",
-        renderCell: function render({ row }) {
-          return (
-            <>
-              <EditButton hideText recordItemId={row.id} />
-              <ShowButton hideText recordItemId={row.id} />
-              <DeleteButton hideText recordItemId={row.id} />
-            </>
-          );
-        },
-      },
-    ],
-    []
-  );
+      align: "center",
+      headerAlign: "center",
+      minWidth: 80,
+    },
+  ]
 
   return (
     <List>
-      <Paper
-        elevation={0}
-        sx={{
-          p: 0,
-          borderRadius: 4,
-          maxWidth: 900,
-          mx: "auto",
-          background: (theme) =>
-            theme.palette.mode === "dark"
-              ? "linear-gradient(90deg, #23272f 60%, #283046 100%)"
-              : "linear-gradient(90deg, #e3f2fd 60%, #bbdefb 100%)",
-          boxShadow: "0 4px 24px rgba(30, 136, 229, 0.08)",
-          transition: "background 0.3s",
-        }}
-      >
-
-        <DataGrid
-          {...dataGridProps}
-          columns={columns}
-          autoHeight
-          sx={{
-            background: "transparent",
-            borderRadius: 4,
-            "& .MuiDataGrid-columnHeaders": {
-              background: "transparent",
-              borderBottom: "2px solid #e3f2fd",
-            },
-            "& .MuiDataGrid-footerContainer": {
-              background: "transparent",
-            },
-            "& .MuiDataGrid-row": {
-              borderBottom: "1px solid #bbdefb",
-            },
-          }}
-        />
-      </Paper>
+      <DataGrid {...dataGridProps} columns={columns} autoHeight />
     </List>
-  );
-};
+  )
+}

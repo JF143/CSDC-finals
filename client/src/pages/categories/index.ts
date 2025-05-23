@@ -1,4 +1,4 @@
-export * from "./create";
-export * from "./edit";
-export * from "./list";
-export * from "./show";
+export { CategoryList } from "./list"
+export { CategoryCreate } from "./create"
+export { CategoryEdit } from "./edit"
+export { CategoryShow } from "./show"

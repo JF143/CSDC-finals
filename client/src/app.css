@@ -21,26 +21,54 @@
   font-family: "Manrope", "Inter", "Segoe UI", Arial, sans-serif;
 }
 
-.body {
+body {
   min-height: 100vh;
   color: var(--black-color);
-  background: linear-gradient(135deg, #384553 0%, #a5d8ff 100%);
-  box-shadow: 0 4px 32px 0 rgba(59, 130, 246, 0.05);
+  background: #f8fafc;
   transition: background 0.3s;
 }
 
-
 a {
   text-decoration: none;
-  color: var( --primary-color);
+  color: var(--primary-color);
   transition: color 0.2s;
 }
 
+/* Ensure the root element takes full height */
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
 
+#root {
+  display: flex;
+  flex-direction: column;
+}
 
+/* Add some basic styling for empty states */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  padding: 2rem;
+  text-align: center;
+}
 
+/* Ensure content areas have a minimum background */
+.MuiContainer-root,
+.MuiPaper-root {
+  background-color: white;
+}
 
-
-
-
-
+/* Loading states */
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}

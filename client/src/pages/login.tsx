@@ -1,115 +1,121 @@
-import { useLogin } from "@refinedev/core";
-import { useEffect, useRef } from "react";
+"use client"
 
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Typography from "@mui/material/Typography";
-import Card from "@mui/material/Card";
-import CardContent from "@mui/material/CardContent";
-import { ThemedTitleV2 } from "@refinedev/mui";
+import { useLogin } from "@refinedev/core"
+import { useForm } from "@refinedev/react-hook-form"
+import type * as React from "react"
 
-import { CredentialResponse } from "../interfaces/google";
+import Box from "@mui/material/Box"
+import Button from "@mui/material/Button"
+import Card from "@mui/material/Card"
+import CardContent from "@mui/material/CardContent"
+import Container from "@mui/material/Container"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import type { FieldValues } from "react-hook-form"
 
-const GOOGLE_CLIENT_ID =
-  "1041339102270-e1fpe2b6v6u1didfndh7jkjmpcashs4f.apps.googleusercontent.com";
+type ILoginForm = {
+  email: string
+  password: string
+}
 
 export const Login: React.FC = () => {
-  const { mutate: login } = useLogin<CredentialResponse>();
+  const { mutate: login, isLoading } = useLogin<ILoginForm>()
 
-  const GoogleButton = (): JSX.Element => {
-    const divRef = useRef<HTMLDivElement>(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<ILoginForm>({
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  })
 
-    useEffect(() => {
-      if (typeof window === "undefined" || !window.google || !divRef.current) {
-        return;
-      }
-
-      try {
-        window.google.accounts.id.initialize({
-          ux_mode: "popup",
-          client_id: GOOGLE_CLIENT_ID,
-          callback: async (res: CredentialResponse) => {
-            if (res.credential) {
-              login(res);
-            }
-          },
-        });
-        window.google.accounts.id.renderButton(divRef.current, {
-          theme: "filled_blue",
-          size: "large",
-          type: "standard",
-          shape: "pill",
-          text: "signin_with",
-          logo_alignment: "center",
-        });
-      } catch (error) {
-        console.log(error);
-      }
-    }, []);
-
-    return <div ref={divRef} />;
-  };
+  const onSubmit = (data: FieldValues) => {
+    login(data as ILoginForm)
+  }
 
   return (
-    <Box
+    <Container
       style={{
-        height: "100vh",
-        width: "100vw",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        background: "linear-gradient(135deg, #1a1a2e, #16213e)",
-        margin: 0,
+        height: "100vh",
+        background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
       }}
     >
-      <Card
-        style={{
-          maxWidth: "400px",
-          width: "100%",
-          borderRadius: "16px",
-          boxShadow: "0 12px 32px rgba(0, 0, 0, 0.3)",
-          backgroundColor: "#0f3460",
-          color: "#fff",
-          animation: "fadeIn 1s ease-in-out",
+      <Box
+        component="div"
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          width: "400px",
         }}
       >
-        <CardContent>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            gap="24px"
-          >
-            <ThemedTitleV2
-              collapsed={false}
-              wrapperStyles={{
-                fontSize: "28px",
-                justifyContent: "center",
-                fontWeight: "bold",
-                color: "#fff",
-              }}
-              text="Welcome to Refine"
-            />
-
-            <GoogleButton />
-
-            <Typography
-              align="center"
-              color={"#b0b0b0"}
-              fontSize="14px"
-              style={{ marginTop: "16px" }}
-            >
-              Powered by
-              <img
-                style={{ padding: "0 5px", verticalAlign: "middle" }}
-                alt="Google"
-                src="https://refine.ams3.cdn.digitaloceanspaces.com/superplate-auth-icons%2Fgoogle.svg"
-              />
-              Google
+        <Card elevation={8}>
+          <CardContent sx={{ padding: "32px" }}>
+            <Typography variant="h4" component="h1" align="center" color="primary" fontWeight={700} mb={4}>
+              Welcome to Refine
             </Typography>
-          </Box>
-        </CardContent>
-      </Card>
-    </Box>
-  );
-};
+            <Typography variant="body2" align="center" color="textSecondary" mb={3}>
+              Sign in to your account
+            </Typography>
+            <Box
+              component="form"
+              onSubmit={handleSubmit(onSubmit)}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "16px",
+              }}
+            >
+              <TextField
+                id="email"
+                label="Email"
+                type="email"
+                fullWidth
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                    message: "Invalid email address",
+                  },
+                })}
+                error={!!errors.email}
+                helperText={(errors.email as any)?.message}
+
+              />
+              <TextField
+                id="password"
+                label="Password"
+                type="password"
+                fullWidth
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 6,
+                    message: "Password must be at least 6 characters",
+                  },
+                })}
+                error={!!errors.password}
+                helperText={(errors.password as any)?.message}
+              />
+              <Button type="submit" variant="contained" fullWidth size="large" disabled={isLoading} sx={{ mt: 2 }}>
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </Box>
+            <Box sx={{ mt: 3, textAlign: "center" }}>
+              <Typography variant="body2" color="textSecondary">
+                Demo credentials: test@example.com / password123
+              </Typography>
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
+  )
+}
+
+export default Login
