@@ -10,11 +10,6 @@ const blogPostSchema = mongoose.Schema(
       type: String,
       required: true,
     },
-    status: {
-      type: String,
-      enum: ["published", "draft", "archived"],
-      default: "draft",
-    },
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
@@ -23,7 +18,13 @@ const blogPostSchema = mongoose.Schema(
     author: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      // Make author optional for now
+      required: false,
+    },
+    status: {
+      type: String,
+      enum: ["draft", "published", "rejected"],
+      default: "draft",
     },
     tags: [String],
     image: {
@@ -35,9 +36,6 @@ const blogPostSchema = mongoose.Schema(
     timestamps: true,
   },
 )
-
-// Add text index for search functionality
-blogPostSchema.index({ title: "text", content: "text" })
 
 const BlogPost = mongoose.model("BlogPost", blogPostSchema)
 

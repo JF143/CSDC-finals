@@ -76,24 +76,38 @@ const getBlogPostById = asyncHandler(async (req, res) => {
 // @access  Private
 const createBlogPost = asyncHandler(async (req, res) => {
   try {
-    const { title, content, category, status, tags, image } = req.body
+    console.log("Creating blog post with data:", req.body)
+    const { title, content, category, status } = req.body
 
     // Validate required fields
-    if (!title || !content || !category) {
+    if (!title || !content) {
       res.status(400)
-      throw new Error("Title, content, and category are required")
+      throw new Error("Title and content are required")
     }
 
+    // Handle category - it might be coming as an object with id
+    let categoryId
+    if (typeof category === "object" && category.id) {
+      categoryId = category.id
+    } else if (category && (typeof category === "string" || typeof category === "number")) {
+      categoryId = category
+    } else {
+      console.log("Invalid category format:", category)
+      res.status(400)
+      throw new Error("Invalid category format")
+    }
+
+    // Create the blog post
     const blogPost = new BlogPost({
       title,
       content,
-      category,
+      category: categoryId,
       status: status || "draft",
-      author: req.user._id,
-      tags: tags || [],
-      image: image || "",
+      // Only set author if req.user exists
+      ...(req.user && { author: req.user._id }),
     })
 
+    console.log("Saving blog post:", blogPost)
     const createdBlogPost = await blogPost.save()
 
     // Populate the created blog post before returning
@@ -101,13 +115,14 @@ const createBlogPost = asyncHandler(async (req, res) => {
       .populate("category", "title")
       .populate("author", "name email picture")
 
+    console.log("Successfully created blog post:", populatedBlogPost)
     res.status(201).json(populatedBlogPost)
   } catch (error) {
     console.error("Error creating blog post:", error)
-    if (error.message === "Title, content, and category are required") {
+    if (error.message === "Title and content are required" || error.message === "Invalid category format") {
       res.status(400).json({ message: error.message })
     } else {
-      res.status(500).json({ message: "Error creating blog post" })
+      res.status(500).json({ message: "Error creating blog post: " + error.message })
     }
   }
 })
@@ -122,8 +137,8 @@ const updateBlogPost = asyncHandler(async (req, res) => {
     const blogPost = await BlogPost.findById(req.params.id)
 
     if (blogPost) {
-      // Check if user is the author of the post
-      if (blogPost.author.toString() !== req.user._id.toString()) {
+      // Check if user is the author of the post (if req.user exists)
+      if (req.user && blogPost.author && blogPost.author.toString() !== req.user._id.toString()) {
         res.status(403)
         throw new Error("You can only edit your own posts")
       }
@@ -165,8 +180,8 @@ const deleteBlogPost = asyncHandler(async (req, res) => {
     const blogPost = await BlogPost.findById(req.params.id)
 
     if (blogPost) {
-      // Check if user is the author of the post
-      if (blogPost.author.toString() !== req.user._id.toString()) {
+      // Check if user is the author of the post (if req.user exists)
+      if (req.user && blogPost.author && blogPost.author.toString() !== req.user._id.toString()) {
         res.status(403)
         throw new Error("You can only delete your own posts")
       }

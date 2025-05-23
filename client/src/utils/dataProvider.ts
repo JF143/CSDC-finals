@@ -17,6 +17,7 @@ const transformData = (data: any) => {
   return data
 }
 
+// Export as a function that returns a DataProvider
 export const dataProvider = (): DataProvider => {
   return {
     getList: async ({ resource, pagination, filters, meta }) => {
@@ -148,3 +149,6 @@ export const dataProvider = (): DataProvider => {
     },
   }
 }
+
+// Do NOT export default as an object - this was causing the error
+// export default dataProvider

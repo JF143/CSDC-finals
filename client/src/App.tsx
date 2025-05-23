@@ -12,7 +12,7 @@ import routerBindings, {
   NavigateToResource,
   UnsavedChangesNotifier,
 } from "@refinedev/react-router"
-import { BrowserRouter, Outlet, Route, Routes } from "react-router"
+import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom"
 import { Header } from "./components/header"
 import { ColorModeContextProvider } from "./contexts/color-mode"
 import { BlogPostCreate, BlogPostEdit, BlogPostList, BlogPostShow } from "./pages/blog-posts"
